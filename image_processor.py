@@ -85,7 +85,7 @@ def create_frame(frame_index, reading: Reading, frame_rate: int, resolution: Tup
     draw_joystick(image, (joystick_center[0] - joystick_spacing / 2, joystick_center[1]), (left_x, left_y))
     draw_joystick(image, (joystick_center[0] + joystick_spacing / 2, joystick_center[1]), (right_x, right_y))
 
-    ImageDraw.Draw(image).text((100, 100), "{} s".format(round(reading.timestamp / 1000, 1)))
+    # ImageDraw.Draw(image).text((100, 100), "{} s".format(round(reading.timestamp / 1000, 1)))
 
     # image.show()
     # raise Exception("Bye")

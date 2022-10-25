@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 resolution: Tuple[int, int] = (1920, 1080)
 frame_rate: int = 30
-input_file = "data-0.csv"
+input_file = "/media/samuel/Windows/Users/samuel/Videos/Vliegtuig/2022-10-21 1700/RClogger/data-1.csv"
 
 
 def convert_csv_data(data: List[str]) -> Reading:
