@@ -10,7 +10,6 @@ logger = logging.getLogger(__name__)
 
 resolution: Tuple[int, int] = (1920, 1080)
 frame_rate: int = 30
-output_file = "output.avi"
 input_file = "data-0.csv"
 
 
@@ -64,6 +63,7 @@ def process_csv(csv, file_line_count, video):
 
 def main():
     print("Data file: {}".format(input_file))
+    output_file = "{}.avi".format(utils.remove_file_extension(input_file))
     print("Video file: {}".format(output_file))
 
     file_line_count = utils.file_line_count(input_file)
