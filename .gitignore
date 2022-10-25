@@ -1,0 +1,12 @@
+venv/
+.idea/
+*.iml
+__pycache__/
+*.pyc
+*.pyo
+settings_local.py
+example_response.py
+*.bak
+*.tmp
+app.db
+output.avi
