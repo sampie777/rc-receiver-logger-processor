@@ -31,6 +31,7 @@ def main():
     file_line_count = utils.file_line_count(input_file)
 
     video = video_processor.init(output_file, frame_rate, resolution)
+    image_processor.init(resolution)
 
     try:
         with open(input_file, 'r') as csv:
@@ -72,6 +73,7 @@ def main():
         pass
 
     video_processor.close(video)
+    image_processor.close()
     print("\nDone")
 
 
