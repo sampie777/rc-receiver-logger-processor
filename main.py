@@ -35,8 +35,9 @@ def main():
 
     try:
         with open(input_file, 'r') as csv:
-            print("\rProcessing... 0 %", end="", flush=True)
+            print("\rProcessing {}... 0 %".format(input_file), end="", flush=True)
 
+            frame_index = 0
             for i, line in enumerate(csv):
                 # Skip header line
                 if i == 0:
@@ -51,25 +52,25 @@ def main():
                     break
 
                 try:
-                    frame = image_processor.create_frame(i, reading, frame_rate, resolution)
+                    frames = image_processor.create_frame(frame_index, reading, frame_rate, resolution)
                 except Exception as e:
                     logger.error("Failed to create frame {} for line '{}'".format(i, line))
                     logger.exception(e, exc_info=True)
                     break
 
-                if frame is None:
-                    continue
-
-                print("\rProcessing... {} %   ({} sec.)".format(round(i / (file_line_count - 1) * 100), round(i / frame_rate)), end="", flush=True)
-
-                try:
-                    video.write(frame)
-                except Exception as e:
-                    logger.error("Failed to write frame {} for line '{}'".format(i, line))
-                    logger.exception(e, exc_info=True)
-                    break
+                for frame in frames:
+                    print("\rProcessing... {} %   ({} sec.)".format(round(i / (file_line_count - 1) * 100),
+                                                                    round(frame_index / frame_rate)), end="", flush=True)
+                    try:
+                        video.write(frame)
+                        frame_index += 1
+                    except Exception as e:
+                        logger.error("Failed to write frame {} for line '{}'".format(i, line))
+                        logger.exception(e, exc_info=True)
+                        break
 
     except KeyboardInterrupt as e:
+        print("\nCancelling...")
         pass
 
     video_processor.close(video)

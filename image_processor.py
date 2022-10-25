@@ -1,13 +1,14 @@
-from typing import Tuple, Optional
+from typing import Tuple, Optional, List
 
 import numpy
-from PIL import Image
+from PIL import Image, ImageDraw
 from PIL.Image import Image as ImageType
 
 from objects import Reading
 
 next_frame_time = 0
-background_color = (255, 255, 200)
+last_frame = None
+background_color = (50, 50, 0)
 
 joystick_center = (960, 900)
 joystick_spacing = 500
@@ -44,20 +45,23 @@ def draw_joystick(image: ImageType, center: Tuple[float, float], knob_offset: Tu
     draw_centered(image, joystick_knob_image, knob_center)
 
 
-def create_frame(frame_index, reading: Reading, frame_rate: int, resolution: Tuple[int, int]) -> Optional:
-    global next_frame_time
+def create_frame(frame_index, reading: Reading, frame_rate: int, resolution: Tuple[int, int]) -> List:
+    global next_frame_time, last_frame
+    frames = []
 
     if joystick_knob_image is None or joystick_base_image is None:
         raise Exception("Joystick images are not initialized. Did you forget to call init()?")
 
-    if reading.channel3 < 0:
-        return None
+    if next_frame_time == 0:
+        next_frame_time = reading.timestamp
 
     if reading.timestamp < next_frame_time:
-        return None
+        return frames
 
+    next_frame_time += + 1000 / frame_rate
     while reading.timestamp > next_frame_time:
-        next_frame_time += 1000 / frame_rate
+        next_frame_time += + 1000 / frame_rate
+        frames.append(last_frame)
 
     image = Image.new('RGB', resolution, background_color)
 
@@ -69,7 +73,11 @@ def create_frame(frame_index, reading: Reading, frame_rate: int, resolution: Tup
     draw_joystick(image, (joystick_center[0] - joystick_spacing / 2, joystick_center[1]), (left_x, left_y))
     draw_joystick(image, (joystick_center[0] + joystick_spacing / 2, joystick_center[1]), (right_x, right_y))
 
+    ImageDraw.Draw(image).text((100, 100), "{} ms".format(reading.timestamp))
+
     # image.show()
     # raise Exception("Bye")
 
-    return numpy.array(image)
+    last_frame = numpy.array(image)
+    frames.append(last_frame)
+    return frames
